@@ -1,0 +1,426 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #3178c6aa);
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Du'aa Times Styles */
+.duaa-times-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 4rem; /* increased gap from 2rem to 3rem */
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+
+.duaa-time-container {
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.duaa-time-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.4s ease,
+              background-color 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.duaa-time-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(100, 108, 255, 0.3);
+  z-index: 1;
+}
+
+.duaa-time-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #646cff, #535bf2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.duaa-time-card:hover::before {
+  transform: scaleX(1);
+}
+
+.duaa-time-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.duaa-time-number {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #646cff;
+  margin-right: 0.75rem;
+  min-width: 2.5rem;
+  background: rgba(100, 108, 255, 0.1);
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.duaa-time-card:hover .duaa-time-number {
+  background: rgba(100, 108, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.duaa-time-title {
+  font-size: 1.3rem;
+  margin: 0;
+  color: #f8f8f8;
+  flex: 1;
+  text-align: left;
+  transition: color 0.3s ease;
+  font-weight: 600;
+}
+
+.duaa-time-card:hover .duaa-time-title {
+  color: #646cff;
+}
+
+.duaa-time-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.duaa-time-description {
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+  flex: 1;
+  line-height: 1.6;
+}
+
+.duaa-time-source {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: auto;
+  text-align: left;
+  font-style: italic;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition: color 0.3s ease;
+}
+
+.duaa-time-card:hover .duaa-time-source {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.page-title {
+  margin-bottom: 1rem;
+  color: #f8f8f8;
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #646cff, #535bf2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeIn 1s ease;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+  
+  .duaa-time-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .duaa-time-card:hover {
+    background-color: #ffffff;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
+    border-color: rgba(100, 108, 255, 0.3);
+  }
+  
+  .duaa-time-title {
+    color: #213547;
+  }
+  
+  .duaa-time-card:hover .duaa-time-title {
+    color: #535bf2;
+  }
+  
+  .duaa-time-description {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .duaa-time-source {
+    color: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .duaa-time-card:hover .duaa-time-source {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .duaa-time-number {
+    background: rgba(100, 108, 255, 0.1);
+  }
+  
+  .page-title {
+    background: linear-gradient(90deg, #535bf2, #646cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .page-subtitle {
+    color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Filter and Search Section */
+.controls-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 1.4s ease;
+}
+
+.search-container {
+  display: flex;
+  width: 100%;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.category-filter {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.category-filter:hover {
+  background: rgba(100, 108, 255, 0.2);
+  border-color: rgba(100, 108, 255, 0.3);
+}
+
+.category-filter.active {
+  background: rgba(100, 108, 255, 0.3);
+  border-color: #646cff;
+  color: white;
+}
+
+@media (prefers-color-scheme: light) {
+  .search-input {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.9);
+  }
+  
+  .category-filter {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .category-filter:hover {
+    background: rgba(100, 108, 255, 0.1);
+  }
+  
+  .category-filter.active {
+    background: rgba(100, 108, 255, 0.2);
+    color: #213547;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .duaa-times-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .page-title {
+    font-size: 2.5rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .duaa-time-card {
+    padding: 1.25rem;
+  }
+}
