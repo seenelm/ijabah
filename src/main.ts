@@ -141,8 +141,6 @@ let totalCards = 0
 
 // Add duaa times to the grid view and create pagination dots
 duaaTimesData.forEach((duaaTime, index) => {
-  const category = duaaTime.category || 'Uncategorized'
-  
   // Create element for grid view with animation delay
   setTimeout(() => {
     const duaaTimeElement = createDuaaTimeElement(duaaTime)
@@ -325,96 +323,18 @@ function handleSwipe() {
 searchInput.addEventListener('input', (e) => {
   const searchTerm = (e.target as HTMLInputElement).value.toLowerCase()
   
-  // Get all duaa time containers
-  const duaaContainers = document.querySelectorAll('.duaa-time-container')
-  
-  duaaContainers.forEach((container, index) => {
-    const card = container.querySelector('.duaa-time-card')
-    const title = card?.querySelector('.duaa-time-title')?.textContent?.toLowerCase() || ''
-    const description = card?.querySelector('.duaa-time-description')?.textContent?.toLowerCase() || ''
-    const source = card?.querySelector('.duaa-time-source')?.textContent?.toLowerCase() || ''
+  // Filter grid view
+  document.querySelectorAll('.duaa-time-card').forEach(card => {
+    const title = card.querySelector('.duaa-title')?.textContent?.toLowerCase() || ''
+    const description = card.querySelector('.duaa-description')?.textContent?.toLowerCase() || ''
     
-    // Check if the search term is found in any of the text content
-    const isMatch = title.includes(searchTerm) || 
-                   description.includes(searchTerm) || 
-                   source.includes(searchTerm)
-    
-    // Show or hide based on search match
-    if (isMatch) {
-      container.classList.remove('hidden')
-      // Re-animate when showing after filtering
-      if (container.classList.contains('filtered-out')) {
-        const htmlContainer = container as HTMLElement;
-        htmlContainer.style.animationDelay = `${index * 0.05}s`;
-        htmlContainer.style.animation = 'none';
-        setTimeout(() => {
-          htmlContainer.style.animation = 'fadeInUp 0.6s ease forwards';
-        }, 10)
-      }
-      container.classList.remove('filtered-out')
+    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+      (card as HTMLElement).style.display = 'flex'
     } else {
-      container.classList.add('hidden')
-      container.classList.add('filtered-out')
+      (card as HTMLElement).style.display = 'none'
     }
   })
 })
-
-// Function to filter duaa times by category
-function filterDuaaTimes(category: string) {
-  const duaaContainers = document.querySelectorAll('.duaa-time-container')
-  
-  duaaContainers.forEach((container, index) => {
-    if (category === 'All') {
-      container.classList.remove('hidden')
-      // Re-animate when showing after filtering
-      if (container.classList.contains('filtered-out')) {
-        const htmlContainer = container as HTMLElement;
-        htmlContainer.style.animationDelay = `${index * 0.05}s`;
-        htmlContainer.style.animation = 'none';
-        setTimeout(() => {
-          htmlContainer.style.animation = 'fadeInUp 0.6s ease forwards';
-        }, 10)
-      }
-      container.classList.remove('filtered-out')
-    } else {
-      const containerCategory = container.getAttribute('data-category')
-      
-      if (containerCategory === category) {
-        container.classList.remove('hidden')
-        // Re-animate when showing after filtering
-        if (container.classList.contains('filtered-out')) {
-          const htmlContainer = container as HTMLElement;
-          htmlContainer.style.animationDelay = `${index * 0.05}s`;
-          htmlContainer.style.animation = 'none';
-          setTimeout(() => {
-            htmlContainer.style.animation = 'fadeInUp 0.6s ease forwards';
-          }, 10)
-        }
-        container.classList.remove('filtered-out')
-      } else {
-        container.classList.add('hidden')
-        container.classList.add('filtered-out')
-      }
-    }
-  })
-}
-
-// Helper function to assign categories (this is just an example)
-function assignCategory(title: string): string {
-  const lowerTitle = title.toLowerCase()
-  
-  if (lowerTitle.includes('friday')) {
-    return 'Weekly'
-  } else if (lowerTitle.includes('night') || lowerTitle.includes('asr') || lowerTitle.includes('prayers')) {
-    return 'Daily'
-  } else if (lowerTitle.includes('fasting') || lowerTitle.includes('zamzam') || lowerTitle.includes('rain')) {
-    return 'Special Occasions'
-  } else if (lowerTitle.includes('parent') || lowerTitle.includes('sick') || lowerTitle.includes('wronged') || lowerTitle.includes('oppressed')) {
-    return 'Personal States'
-  } else {
-    return 'Daily'
-  }
-}
 
 // Add scroll to top button
 const scrollTopButton = document.createElement('button')
@@ -657,3 +577,43 @@ additionalStyles.textContent = `
 `
 
 document.head.appendChild(additionalStyles)
+
+// Function to filter duaa times by category
+function filterDuaaTimes(category: string) {
+  const duaaContainers = document.querySelectorAll('.duaa-time-container')
+  
+  duaaContainers.forEach((container, index) => {
+    if (category === 'All') {
+      container.classList.remove('hidden')
+      // Re-animate when showing after filtering
+      if (container.classList.contains('filtered-out')) {
+        const htmlContainer = container as HTMLElement;
+        htmlContainer.style.animationDelay = `${index * 0.05}s`;
+        htmlContainer.style.animation = 'none';
+        setTimeout(() => {
+          htmlContainer.style.animation = 'fadeInUp 0.6s ease forwards';
+        }, 10)
+      }
+      container.classList.remove('filtered-out')
+    } else {
+      const containerCategory = container.getAttribute('data-category')
+      
+      if (containerCategory === category) {
+        container.classList.remove('hidden')
+        // Re-animate when showing after filtering
+        if (container.classList.contains('filtered-out')) {
+          const htmlContainer = container as HTMLElement;
+          htmlContainer.style.animationDelay = `${index * 0.05}s`;
+          htmlContainer.style.animation = 'none';
+          setTimeout(() => {
+            htmlContainer.style.animation = 'fadeInUp 0.6s ease forwards';
+          }, 10)
+        }
+        container.classList.remove('filtered-out')
+      } else {
+        container.classList.add('hidden')
+        container.classList.add('filtered-out')
+      }
+    }
+  })
+}
