@@ -28,6 +28,31 @@ appElement.appendChild(headerContainer)
 const controlsContainer = document.createElement('div')
 controlsContainer.className = 'controls-container'
 
+// Create view toggle option
+const viewToggleContainer = document.createElement('div')
+viewToggleContainer.className = 'view-toggle-container'
+
+const viewToggleLabel = document.createElement('span')
+viewToggleLabel.textContent = 'View: '
+viewToggleLabel.className = 'view-toggle-label'
+
+const gridViewButton = document.createElement('button')
+gridViewButton.className = 'view-toggle-button active'
+gridViewButton.textContent = 'Grid'
+gridViewButton.setAttribute('data-view', 'grid')
+
+const swipeViewButton = document.createElement('button')
+swipeViewButton.className = 'view-toggle-button'
+swipeViewButton.textContent = 'Swipe'
+swipeViewButton.setAttribute('data-view', 'swipe')
+
+viewToggleContainer.appendChild(viewToggleLabel)
+viewToggleContainer.appendChild(gridViewButton)
+viewToggleContainer.appendChild(swipeViewButton)
+
+// Add the view toggle to the top of the controls container
+controlsContainer.prepend(viewToggleContainer)
+
 // Create search input
 const searchContainer = document.createElement('div')
 searchContainer.className = 'search-container'
@@ -78,20 +103,223 @@ appElement.appendChild(controlsContainer)
 const duaaTimesContainer = document.createElement('div')
 duaaTimesContainer.className = 'duaa-times-container'
 
-// Render each du'aa time component with staggered animations
+// Create swipe view container
+const swipeContainer = document.createElement('div')
+swipeContainer.className = 'swipe-container'
+swipeContainer.style.display = 'none' // Initially hidden
+
+// Create carousel track
+const carouselTrack = document.createElement('div')
+carouselTrack.className = 'carousel-track'
+swipeContainer.appendChild(carouselTrack)
+
+// Create navigation buttons
+const prevButton = document.createElement('button')
+prevButton.className = 'carousel-button prev-button'
+prevButton.innerHTML = '&#8592;' // Left arrow
+prevButton.setAttribute('aria-label', 'Previous card')
+swipeContainer.appendChild(prevButton)
+
+const nextButton = document.createElement('button')
+nextButton.className = 'carousel-button next-button'
+nextButton.innerHTML = '&#8594;' // Right arrow
+nextButton.setAttribute('aria-label', 'Next card')
+swipeContainer.appendChild(nextButton)
+
+// Create pagination container
+const paginationContainer = document.createElement('div')
+paginationContainer.className = 'pagination-container'
+swipeContainer.appendChild(paginationContainer)
+
+// Add both containers to the app
+appElement.appendChild(duaaTimesContainer)
+appElement.appendChild(swipeContainer)
+
+// Current index for the swipe view
+let currentIndex = 0
+let totalCards = 0
+
+// Add duaa times to the grid view and create pagination dots
 duaaTimesData.forEach((duaaTime, index) => {
-  // Add a small timeout to create a staggered effect
+  const category = duaaTime.category || 'Uncategorized'
+  
+  // Create element for grid view with animation delay
   setTimeout(() => {
-    const duaaTimeElement = createDuaaTimeElement({
-      ...duaaTime,
-      // Assign categories based on content (this is just an example)
-      category: assignCategory(duaaTime.title)
-    })
+    const duaaTimeElement = createDuaaTimeElement(duaaTime)
     duaaTimesContainer.appendChild(duaaTimeElement)
   }, index * 50) // 50ms delay between each card
+  
+  // Create pagination indicator
+  const paginationDot = document.createElement('span')
+  paginationDot.className = 'pagination-dot'
+  if (index === 0) paginationDot.classList.add('active')
+  paginationDot.setAttribute('data-index', index.toString())
+  paginationContainer.appendChild(paginationDot)
+  
+  totalCards++
 })
 
-appElement.appendChild(duaaTimesContainer)
+// Add event listeners for view toggle buttons
+document.querySelectorAll('.view-toggle-button').forEach(button => {
+  button.addEventListener('click', () => {
+    const viewType = button.getAttribute('data-view')
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.view-toggle-button').forEach(btn => {
+      btn.classList.remove('active')
+    })
+    
+    // Add active class to clicked button
+    button.classList.add('active')
+    
+    // Toggle visibility of containers
+    if (viewType === 'grid') {
+      duaaTimesContainer.style.display = 'grid'
+      swipeContainer.style.display = 'none'
+    } else if (viewType === 'swipe') {
+      duaaTimesContainer.style.display = 'none'
+      swipeContainer.style.display = 'block'
+      
+      // If switching to swipe view, populate it with cards
+      if (carouselTrack.children.length === 0) {
+        populateSwipeView()
+      }
+      
+      // Update the carousel display
+      updateCarousel()
+    }
+  })
+})
+
+// Function to populate the swipe view with cards
+function populateSwipeView() {
+  // Clear existing cards
+  carouselTrack.innerHTML = ''
+  
+  // Add duaa times to the swipe view
+  duaaTimesData.forEach((duaaTime, index) => {
+    const swipeCard = document.createElement('div')
+    swipeCard.className = 'swipe-card'
+    
+    // Create a container specifically for the swipe view
+    const swipeCardContent = document.createElement('div')
+    swipeCardContent.className = 'swipe-card-content'
+    
+    // Create title
+    const title = document.createElement('h3')
+    title.className = 'swipe-title'
+    title.textContent = duaaTime.title
+    
+    // Create description
+    const description = document.createElement('div')
+    description.className = 'swipe-description'
+    description.textContent = duaaTime.description || '' // Use empty string as fallback
+    
+    // Create source
+    const source = document.createElement('div')
+    source.className = 'swipe-source'
+    source.textContent = duaaTime.source
+    
+    // Create number badge
+    const number = document.createElement('div')
+    number.className = 'swipe-number'
+    number.textContent = `#${index + 1}`
+    
+    // Assemble the card
+    swipeCardContent.appendChild(number)
+    swipeCardContent.appendChild(title)
+    swipeCardContent.appendChild(description)
+    swipeCardContent.appendChild(source)
+    swipeCard.appendChild(swipeCardContent)
+    
+    // Set initial position
+    if (index === currentIndex) {
+      swipeCard.style.transform = 'translateX(0) scale(1)'
+      swipeCard.style.opacity = '1'
+      swipeCard.style.zIndex = '5'
+    } else {
+      const direction = index < currentIndex ? -1 : 1
+      swipeCard.style.transform = `translateX(${direction * 100}%) scale(0.8)`
+      swipeCard.style.opacity = '0'
+      swipeCard.style.zIndex = '0'
+    }
+    
+    carouselTrack.appendChild(swipeCard)
+  })
+}
+
+// Function to update the carousel display
+function updateCarousel() {
+  // Update the carousel track position
+  const swipeCards = document.querySelectorAll('.swipe-card')
+  swipeCards.forEach((card, index) => {
+    const htmlCard = card as HTMLElement
+    if (index === currentIndex) {
+      htmlCard.style.transform = 'translateX(0) scale(1)'
+      htmlCard.style.opacity = '1'
+      htmlCard.style.zIndex = '5'
+    } else {
+      const direction = index < currentIndex ? -1 : 1
+      htmlCard.style.transform = `translateX(${direction * 100}%) scale(0.8)`
+      htmlCard.style.opacity = '0'
+      htmlCard.style.zIndex = '0'
+    }
+  })
+  
+  // Update pagination dots
+  document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
+    if (index === currentIndex) {
+      dot.classList.add('active')
+    } else {
+      dot.classList.remove('active')
+    }
+  })
+}
+
+// Add event listeners for navigation buttons
+prevButton.addEventListener('click', () => {
+  currentIndex = (currentIndex - 1 + totalCards) % totalCards
+  updateCarousel()
+})
+
+nextButton.addEventListener('click', () => {
+  currentIndex = (currentIndex + 1) % totalCards
+  updateCarousel()
+})
+
+// Add event listeners for pagination dots
+document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
+  dot.addEventListener('click', () => {
+    currentIndex = index
+    updateCarousel()
+  })
+})
+
+// Add touch swipe functionality for mobile users
+let touchStartX = 0
+let touchEndX = 0
+
+swipeContainer.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX
+})
+
+swipeContainer.addEventListener('touchend', (e) => {
+  touchEndX = e.changedTouches[0].screenX
+  handleSwipe()
+})
+
+function handleSwipe() {
+  const swipeThreshold = 50 // Minimum distance required for a swipe
+  if (touchEndX < touchStartX - swipeThreshold) {
+    // Swipe left - go to next card
+    currentIndex = (currentIndex + 1) % totalCards
+    updateCarousel()
+  } else if (touchEndX > touchStartX + swipeThreshold) {
+    // Swipe right - go to previous card
+    currentIndex = (currentIndex - 1 + totalCards) % totalCards
+    updateCarousel()
+  }
+}
 
 // Search functionality
 searchInput.addEventListener('input', (e) => {
@@ -256,3 +484,176 @@ style.textContent = `
 `
 
 document.head.appendChild(style)
+
+// Add CSS for the swipe view
+const additionalStyles = document.createElement('style')
+additionalStyles.textContent = `
+  .view-toggle-container {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(100, 108, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(100, 108, 255, 0.2);
+    width: fit-content;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .view-toggle-label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-right: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .view-toggle-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.6rem 1.5rem;
+    margin-right: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  
+  .view-toggle-button:last-child {
+    margin-right: 0;
+  }
+  
+  .view-toggle-button.active {
+    background: #646cff;
+    color: white;
+    border-color: #646cff;
+    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .swipe-container {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    margin: 2rem auto;
+    height: 500px;
+    overflow: hidden;
+  }
+  
+  .carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .swipe-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .swipe-card-content {
+    width: 90%;
+    height: 90%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .swipe-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(100, 108, 255, 0.2);
+    color: #646cff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .swipe-title {
+    font-size: 1.6rem;
+    margin: 0 0 1.5rem 0;
+    color: rgba(255, 255, 255, 0.95);
+    padding-right: 3rem;
+  }
+  
+  .swipe-description {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .swipe-description::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .swipe-description::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  
+  .swipe-description::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+  
+  .swipe-source {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .pagination-dot.active {
+    background: #646cff;
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(100, 108, 255, 0.5);
+  }
+  
+  @media (max-width: 768px) {
+    .swipe-container {
+      width: 90%;
+      height: 450px;
+    }
+    
+    .swipe-card-content {
+      width: 90%;
+      height: 90%;
+      padding: 1.5rem;
+    }
+    
+    .swipe-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .swipe-description {
+      font-size: 1rem;
+    }
+  }
+`
+
+document.head.appendChild(additionalStyles)
