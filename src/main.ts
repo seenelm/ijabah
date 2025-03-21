@@ -205,10 +205,16 @@ function populateSwipeView() {
   duaaTimesData.forEach((duaaTime, index) => {
     const swipeCard = document.createElement('div')
     swipeCard.className = 'swipe-card'
+    swipeCard.setAttribute('data-index', index.toString())
     
     // Create a container specifically for the swipe view
     const swipeCardContent = document.createElement('div')
     swipeCardContent.className = 'swipe-card-content'
+    
+    // Create number badge
+    const number = document.createElement('div')
+    number.className = 'swipe-number'
+    number.textContent = `#${index + 1}`
     
     // Create title
     const title = document.createElement('h3')
@@ -220,22 +226,50 @@ function populateSwipeView() {
     description.className = 'swipe-description'
     description.textContent = duaaTime.description || '' // Use empty string as fallback
     
+    // Create English text if available (use as description if no description exists)
+    if (duaaTime.englishText && !duaaTime.description) {
+      description.textContent = duaaTime.englishText
+    }
+    
+    // Create Arabic text element
+    const arabic = document.createElement('div')
+    arabic.className = 'swipe-arabic'
+    
+    // Use the correct property name from the data structure
+    if (duaaTime.arabicText) {
+      arabic.textContent = duaaTime.arabicText
+    } else {
+      arabic.textContent = 'Arabic text not available'
+      arabic.style.fontStyle = 'italic'
+      arabic.style.opacity = '0.7'
+    }
+    
     // Create source
     const source = document.createElement('div')
     source.className = 'swipe-source'
     source.textContent = duaaTime.source
     
-    // Create number badge
-    const number = document.createElement('div')
-    number.className = 'swipe-number'
-    number.textContent = `#${index + 1}`
-    
     // Assemble the card
     swipeCardContent.appendChild(number)
     swipeCardContent.appendChild(title)
     swipeCardContent.appendChild(description)
+    swipeCardContent.appendChild(arabic)
     swipeCardContent.appendChild(source)
     swipeCard.appendChild(swipeCardContent)
+    
+    // Add flip functionality to the entire card
+    swipeCard.addEventListener('click', function(e: MouseEvent) {
+      // Don't flip if we're swiping
+      if (isDragging) return
+      
+      // Toggle the flipped class to trigger the animation
+      this.classList.toggle('flipped')
+      
+      // Log for debugging
+      console.log('Card flipped:', this.classList.contains('flipped'))
+      console.log('Arabic text:', duaaTime.arabicText || 'None')
+      console.log('Logging E', e )
+    })
     
     // Set initial position
     if (index === currentIndex) {
@@ -303,14 +337,17 @@ document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
 // Add touch swipe functionality for mobile users
 let touchStartX = 0
 let touchEndX = 0
+let isDragging = false
 
 swipeContainer.addEventListener('touchstart', (e) => {
   touchStartX = e.changedTouches[0].screenX
+  isDragging = true
 })
 
 swipeContainer.addEventListener('touchend', (e) => {
   touchEndX = e.changedTouches[0].screenX
   handleSwipe()
+  isDragging = false
 })
 
 function handleSwipe() {
@@ -520,7 +557,6 @@ additionalStyles.textContent = `
     font-size: 1.6rem;
     margin: 0 0 1.5rem 0;
     color: rgba(255, 255, 255, 0.95);
-    padding-right: 3rem;
   }
   
   .swipe-description {
@@ -553,6 +589,27 @@ additionalStyles.textContent = `
     font-size: 0.95rem;
     padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .swipe-arabic {
+    font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+    font-size: 1.8rem;
+    line-height: 1.8;
+    text-align: right;
+    direction: rtl;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: none;
+  }
+  
+  .swipe-card.flipped .swipe-description {
+    display: none;
+  }
+  
+  .swipe-card.flipped .swipe-arabic {
+    display: block;
   }
   
   .pagination-dot.active {
