@@ -129,6 +129,13 @@ swipeContainer.appendChild(nextButton)
 // Create pagination container
 const paginationContainer = document.createElement('div')
 paginationContainer.className = 'pagination-container'
+paginationContainer.style.bottom = '15px'
+paginationContainer.style.left = '0'
+paginationContainer.style.right = '0'
+paginationContainer.style.display = 'flex'
+paginationContainer.style.justifyContent = 'center'
+paginationContainer.style.gap = '8px'
+paginationContainer.style.zIndex = '10'
 swipeContainer.appendChild(paginationContainer)
 
 // Add both containers to the app
@@ -457,7 +464,7 @@ additionalStyles.textContent = `
     width: 90%;
     max-width: 600px;
     margin: 2rem auto;
-    height: 500px;
+    height: 550px;
     overflow: hidden;
   }
   
@@ -484,7 +491,7 @@ additionalStyles.textContent = `
   
   .swipe-card-content {
     width: 90%;
-    height: 90%;
+    height: 85%;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     padding: 2rem;
@@ -494,6 +501,7 @@ additionalStyles.textContent = `
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    margin: 20px 0;
   }
   
   .swipe-number {
@@ -556,27 +564,148 @@ additionalStyles.textContent = `
   @media (max-width: 768px) {
     .swipe-container {
       width: 90%;
-      height: 450px;
+      height: 500px;
+      margin: 1.5rem auto 2.5rem;
     }
     
     .swipe-card-content {
       width: 90%;
-      height: 90%;
+      height: 85%;
       padding: 1.5rem;
-    }
-    
-    .swipe-title {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-    }
-    
-    .swipe-description {
-      font-size: 1rem;
+      margin: 15px 0;
     }
   }
 `
 
 document.head.appendChild(additionalStyles)
+
+// Create modal container for hadith details
+const modalContainer = document.createElement('div')
+modalContainer.className = 'modal-container'
+modalContainer.style.display = 'none'
+
+// Create modal content
+const modalContent = document.createElement('div')
+modalContent.className = 'modal-content'
+
+// Create close button
+const closeButton = document.createElement('button')
+closeButton.className = 'modal-close-button'
+closeButton.innerHTML = '&times;'
+closeButton.addEventListener('click', () => {
+  modalContainer.style.display = 'none'
+  document.body.style.overflow = 'auto' // Re-enable scrolling
+})
+
+// Create modal header
+const modalHeader = document.createElement('div')
+modalHeader.className = 'modal-header'
+
+// Create title element
+const modalTitle = document.createElement('h2')
+modalTitle.className = 'modal-title'
+modalHeader.appendChild(modalTitle)
+modalHeader.appendChild(closeButton)
+
+// Create modal body
+const modalBody = document.createElement('div')
+modalBody.className = 'modal-body'
+
+// Create Arabic text container
+const arabicTextContainer = document.createElement('div')
+arabicTextContainer.className = 'modal-arabic-text'
+
+// Create English text container
+const englishTextContainer = document.createElement('div')
+englishTextContainer.className = 'modal-english-text'
+
+// Create reference link container
+const referenceContainer = document.createElement('div')
+referenceContainer.className = 'modal-reference'
+
+// Assemble modal
+modalBody.appendChild(arabicTextContainer)
+modalBody.appendChild(englishTextContainer)
+modalBody.appendChild(referenceContainer)
+
+modalContent.appendChild(modalHeader)
+modalContent.appendChild(modalBody)
+modalContainer.appendChild(modalContent)
+
+// Add modal to the app
+appElement.appendChild(modalContainer)
+
+// Function to open modal with hadith details
+function openHadithModal(duaaTime: any) {
+  // Set modal title
+  modalTitle.textContent = duaaTime.title
+  
+  // Set Arabic text if available
+  if (duaaTime.arabicText) {
+    arabicTextContainer.textContent = duaaTime.arabicText
+    arabicTextContainer.style.display = 'block'
+  } else {
+    arabicTextContainer.style.display = 'none'
+  }
+  
+  // Set English text if available
+  if (duaaTime.englishText) {
+    englishTextContainer.textContent = duaaTime.englishText
+    englishTextContainer.style.display = 'block'
+  } else {
+    englishTextContainer.style.display = 'none'
+  }
+  
+  // Set reference link if available
+  if (duaaTime.reference) {
+    const referenceLink = document.createElement('a')
+    referenceLink.href = duaaTime.reference
+    referenceLink.target = '_blank'
+    referenceLink.textContent = 'View on Sunnah.com'
+    referenceContainer.innerHTML = ''
+    referenceContainer.appendChild(referenceLink)
+  } else {
+    // If no specific reference link is provided, try to create one from the source
+    const sourceText = duaaTime.source
+    let referenceUrl = ''
+    
+    if (sourceText.includes('Bukhari')) {
+      referenceUrl = `https://sunnah.com/bukhari/${extractHadithNumber(sourceText)}`
+    } else if (sourceText.includes('Muslim')) {
+      referenceUrl = `https://sunnah.com/muslim/${extractHadithNumber(sourceText)}`
+    } else if (sourceText.includes('Tirmidhi')) {
+      referenceUrl = `https://sunnah.com/tirmidhi/${extractHadithNumber(sourceText)}`
+    } else if (sourceText.includes('Abu Dawud') || sourceText.includes('Abi Dawud')) {
+      referenceUrl = `https://sunnah.com/abudawud/${extractHadithNumber(sourceText)}`
+    } else if (sourceText.includes('Ibn Majah')) {
+      referenceUrl = `https://sunnah.com/ibnmajah/${extractHadithNumber(sourceText)}`
+    }
+    
+    if (referenceUrl) {
+      const referenceLink = document.createElement('a')
+      referenceLink.href = referenceUrl
+      referenceLink.target = '_blank'
+      referenceLink.textContent = 'View on Sunnah.com'
+      referenceContainer.innerHTML = ''
+      referenceContainer.appendChild(referenceLink)
+    } else {
+      referenceContainer.textContent = `Source: ${sourceText}`
+    }
+  }
+  
+  // Show modal
+  modalContainer.style.display = 'flex'
+  document.body.style.overflow = 'hidden' // Prevent scrolling when modal is open
+}
+
+// Expose the openHadithModal function to the global scope
+(window as any).openHadithModal = openHadithModal
+
+// Helper function to extract hadith number from source text
+function extractHadithNumber(sourceText: string): string {
+  const match = sourceText.match(/\d+/)
+  return match ? match[0] : ''
+}
 
 // Function to filter duaa times by category
 function filterDuaaTimes(category: string) {
@@ -617,3 +746,180 @@ function filterDuaaTimes(category: string) {
     }
   })
 }
+
+// Add CSS styles for the modal popup
+const modalStyles = document.createElement('style')
+modalStyles.textContent = `
+  /* Modal Styles */
+  .modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+  }
+  
+  .modal-content {
+    background-color: #242424;
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: modalFadeIn 0.3s ease;
+  }
+  
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #f8f8f8;
+  }
+  
+  .modal-close-button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    transition: color 0.3s ease;
+  }
+  
+  .modal-close-button:hover {
+    color: #fff;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .modal-arabic-text {
+    font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+    font-size: 1.8rem;
+    line-height: 1.8;
+    text-align: right;
+    direction: rtl;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+  
+  .modal-english-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .modal-reference {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-reference a {
+    color: #646cff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .modal-reference a:hover {
+    color: #535bf2;
+    text-decoration: underline;
+  }
+  
+  .modal-reference a::before {
+    content: '🔗';
+  }
+  
+  @media (prefers-color-scheme: light) {
+    .modal-content {
+      background-color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-header {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-title {
+      color: #213547;
+    }
+    
+    .modal-close-button {
+      color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .modal-close-button:hover {
+      color: #000;
+    }
+    
+    .modal-arabic-text {
+      color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .modal-english-text {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .modal-reference {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .modal-content {
+      width: 95%;
+    }
+    
+    .modal-title {
+      font-size: 1.3rem;
+    }
+    
+    .modal-arabic-text {
+      font-size: 1.5rem;
+    }
+    
+    .modal-english-text {
+      font-size: 1rem;
+    }
+  }
+`
+
+document.head.appendChild(modalStyles)

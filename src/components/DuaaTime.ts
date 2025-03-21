@@ -5,6 +5,9 @@ export interface DuaaTimeProps {
   source: string;
   category?: string; // Optional category for filtering
   icon?: string; // Optional icon name for visual enhancement
+  arabicText?: string; // Arabic text of the hadith
+  englishText?: string; // English translation of the hadith
+  reference?: string; // Reference link to sunnah.com or other source
 }
 
 export function createDuaaTimeElement(props: DuaaTimeProps): HTMLElement {
@@ -82,6 +85,12 @@ export function createDuaaTimeElement(props: DuaaTimeProps): HTMLElement {
     setTimeout(() => {
       card.classList.remove('card-active');
     }, 300);
+    
+    // Open the hadith details modal
+    const openHadithModal = (window as any).openHadithModal;
+    if (typeof openHadithModal === 'function') {
+      openHadithModal(props);
+    }
   });
   
   container.appendChild(card);
