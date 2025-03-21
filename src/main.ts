@@ -575,6 +575,57 @@ additionalStyles.textContent = `
       margin: 15px 0;
     }
   }
+  
+  /* Light mode styles for view switcher and swipe cards */
+  @media (prefers-color-scheme: light) {
+    .view-toggle-container {
+      background: rgba(100, 108, 255, 0.1);
+      border: 1px solid rgba(100, 108, 255, 0.2);
+    }
+    
+    .view-toggle-label {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .view-toggle-button {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .view-toggle-button.active {
+      background: #646cff;
+      color: white;
+      border-color: #646cff;
+    }
+    
+    .swipe-card-content {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .swipe-title {
+      color: rgba(0, 0, 0, 0.9);
+    }
+    
+    .swipe-description {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .swipe-description::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .swipe-description::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .swipe-source {
+      color: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
 `
 
 document.head.appendChild(additionalStyles)
