@@ -228,13 +228,11 @@ function populateSwipeView() {
     const arabic = document.createElement('div')
     arabic.className = 'swipe-arabic'
     
-    // Use the correct property name from the data structure
     if (duaaTime.arabicText) {
       arabic.textContent = duaaTime.arabicText
     } else {
-      arabic.textContent = 'Arabic text not available'
-      arabic.style.fontStyle = 'italic'
-      arabic.style.opacity = '0.7'
+      arabic.textContent = 'Arabic text not available for this entry.'
+      arabic.setAttribute('data-empty', '')
     }
     
     // Create source
