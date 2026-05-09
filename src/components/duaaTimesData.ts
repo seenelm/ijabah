@@ -29,17 +29,26 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 4,
     title: 'After the obligatory prayers',
-    source: 'Jami\' at-Tirmidhi 3499'
+    source: 'Jami\' at-Tirmidhi 3499',
+    arabicText: 'أَيُّ الدُّعَاءِ أَسْمَعُ؟ قَالَ: جَوْفُ اللَّيْلِ الآخِرِ، وَدُبُرَ الصَّلَوَاتِ الْمَكْتُوبَاتِ',
+    englishText: 'It was asked: Which supplication is most likely to be heard? He said: In the last part of the night, and after the obligatory prayers.',
+    reference: 'https://sunnah.com/tirmidhi:3499'
   },
   {
     number: 5,
     title: 'Duaa of fasting person until they break their fast',
-    source: 'Jami\' al-Tirmidhi 3598'
+    source: 'Jami\' at-Tirmidhi 3598',
+    arabicText: 'ثَلَاثَةٌ لَا تُرَدُّ دَعْوَتُهُمُ: الصَّائِمُ حَتَّى يُفْطِرَ، وَالْإِمَامُ الْعَادِلُ، وَدَعْوَةُ الْمَظْلُومِ',
+    englishText: 'Three people whose supplication is not rejected: the fasting person until he breaks his fast, the just ruler, and the supplication of the oppressed person.',
+    reference: 'https://sunnah.com/tirmidhi:3598'
   },
   {
     number: 6,
     title: 'When drinking Zamzam water',
-    source: 'Sunan Ibn Majah 3062'
+    source: 'Sunan Ibn Majah 3062',
+    arabicText: 'مَاءُ زَمْزَمَ لِمَا شُرِبَ لَهُ',
+    englishText: 'The water of Zamzam is for whatever purpose it is drunk for.',
+    reference: 'https://sunnah.com/ibnmajah:3062'
   },
   {
     number: 7,
@@ -61,27 +70,41 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 9,
     title: 'Duaa of righteous person for his parents',
-    source: 'Sahih Muslim 1631'
+    source: 'Sahih Muslim 1631',
+    arabicText: 'إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ: إِلاَّ مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ',
+    englishText: 'When a person dies, his deeds come to an end except for three: a continuous charity, beneficial knowledge, or a righteous child who supplicates for him.',
+    reference: 'https://sunnah.com/muslim:1631'
   },
   {
     number: 10,
     title: 'Duaa of a parent',
-    source: 'Sunan al-Kubra lil-Bayhaqi 6392'
+    source: 'Sunan al-Kubra lil-Bayhaqi 6392',
+    arabicText: 'ثَلاَثُ دَعَوَاتٍ مُسْتَجَابَاتٌ لاَ شَكَّ فِيهِنَّ: دَعْوَةُ الْمَظْلُومِ، وَدَعْوَةُ الْمُسَافِرِ، وَدَعْوَةُ الْوَالِدِ عَلَى وَلَدِهِ',
+    englishText: 'Three supplications are answered without doubt: the supplication of the oppressed, the supplication of the traveler, and the supplication of a parent for or against his child.',
   },
   {
     number: 11,
     title: 'Whenever you visit the sick, the angels say ameen to whatever good you say',
-    source: 'Sahih Muslim 919'
+    source: 'Sahih Muslim 919',
+    arabicText: 'إِذَا دَخَلْتُمْ عَلَى الْمَرِيضِ فَقُولُوا خَيْرًا، فَإِنَّ الْمَلَائِكَةَ يُؤَمِّنُونَ عَلَى مَا تَقُولُونَ',
+    englishText: 'When you enter upon a sick person, say good words, for indeed the angels say ameen to whatever you say.',
+    reference: 'https://sunnah.com/muslim:919'
   },
   {
     number: 12,
     title: 'When rain falls',
-    source: 'Sunan Abi Dawud 2540'
+    source: 'Sunan Abi Dawud 2540',
+    arabicText: 'اطْلُبُوا إِجَابَةَ الدُّعَاءِ عِنْدَ الْتِقَاءِ الْجُيُوشِ، وَإِقَامَةِ الصَّلاَةِ، وَنُزُولِ الْغَيْثِ',
+    englishText: 'Seek the response to your supplications at three times: when armies meet, when the prayer is established, and when rain falls.',
+    reference: 'https://sunnah.com/abudawud:2540'
   },
   {
     number: 13,
     title: 'Duaa of traveler',
-    source: 'Sunan al-Tirmidhi 1905'
+    source: 'Jami\' at-Tirmidhi 1905',
+    arabicText: 'ثَلاَثُ دَعَوَاتٍ لاَ تُرَدُّ: دَعْوَةُ الْوَالِدِ لِوَلَدِهِ، وَدَعْوَةُ الصَّائِمِ، وَدَعْوَةُ الْمُسَافِرِ',
+    englishText: 'Three supplications are not rejected: the supplication of a father for his child, the supplication of the fasting person, and the supplication of the traveler.',
+    reference: 'https://sunnah.com/tirmidhi:1905'
   },
   {
     number: 14,
