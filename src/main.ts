@@ -129,13 +129,6 @@ swipeContainer.appendChild(nextButton)
 // Create pagination container
 const paginationContainer = document.createElement('div')
 paginationContainer.className = 'pagination-container'
-paginationContainer.style.bottom = '15px'
-paginationContainer.style.left = '0'
-paginationContainer.style.right = '0'
-paginationContainer.style.display = 'flex'
-paginationContainer.style.justifyContent = 'center'
-paginationContainer.style.gap = '8px'
-paginationContainer.style.zIndex = '10'
 swipeContainer.appendChild(paginationContainer)
 
 // Add both containers to the app
@@ -258,17 +251,9 @@ function populateSwipeView() {
     swipeCard.appendChild(swipeCardContent)
     
     // Add flip functionality to the entire card
-    swipeCard.addEventListener('click', function(e: MouseEvent) {
-      // Don't flip if we're swiping
-      if (isDragging) return
-      
-      // Toggle the flipped class to trigger the animation
+    swipeCard.addEventListener('click', function() {
+      if (hasSwiped) return
       this.classList.toggle('flipped')
-      
-      // Log for debugging
-      console.log('Card flipped:', this.classList.contains('flipped'))
-      console.log('Arabic text:', duaaTime.arabicText || 'None')
-      console.log('Logging E', e )
     })
     
     // Set initial position
@@ -337,28 +322,28 @@ document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
 // Add touch swipe functionality for mobile users
 let touchStartX = 0
 let touchEndX = 0
-let isDragging = false
+let hasSwiped = false
 
 swipeContainer.addEventListener('touchstart', (e) => {
-  touchStartX = e.changedTouches[0].screenX
-  isDragging = true
+  touchStartX = e.changedTouches[0].clientX
+  hasSwiped = false
 })
 
 swipeContainer.addEventListener('touchend', (e) => {
-  touchEndX = e.changedTouches[0].screenX
+  touchEndX = e.changedTouches[0].clientX
   handleSwipe()
-  isDragging = false
 })
 
 function handleSwipe() {
-  const swipeThreshold = 50 // Minimum distance required for a swipe
-  if (touchEndX < touchStartX - swipeThreshold) {
-    // Swipe left - go to next card
-    currentIndex = (currentIndex + 1) % totalCards
-    updateCarousel()
-  } else if (touchEndX > touchStartX + swipeThreshold) {
-    // Swipe right - go to previous card
-    currentIndex = (currentIndex - 1 + totalCards) % totalCards
+  const swipeThreshold = 50
+  const dx = touchEndX - touchStartX
+  if (Math.abs(dx) > swipeThreshold) {
+    hasSwiped = true
+    if (dx < 0) {
+      currentIndex = (currentIndex + 1) % totalCards
+    } else {
+      currentIndex = (currentIndex - 1 + totalCards) % totalCards
+    }
     updateCarousel()
   }
 }
@@ -369,8 +354,8 @@ searchInput.addEventListener('input', (e) => {
   
   // Filter grid view
   document.querySelectorAll('.duaa-time-card').forEach(card => {
-    const title = card.querySelector('.duaa-title')?.textContent?.toLowerCase() || ''
-    const description = card.querySelector('.duaa-description')?.textContent?.toLowerCase() || ''
+    const title = card.querySelector('.duaa-time-title')?.textContent?.toLowerCase() || ''
+    const description = card.querySelector('.duaa-time-description')?.textContent?.toLowerCase() || ''
     
     if (title.includes(searchTerm) || description.includes(searchTerm)) {
       (card as HTMLElement).style.display = 'flex'
@@ -405,287 +390,6 @@ window.addEventListener('scroll', () => {
   }
 })
 
-// Add CSS class for hidden elements
-const style = document.createElement('style')
-style.textContent = `
-  .hidden {
-    display: none;
-  }
-  
-  .scroll-top-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #646cff;
-    color: white;
-    font-size: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    z-index: 100;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 0;
-    line-height: 1;
-  }
-  
-  .arrow-up {
-
-    position: relative;
-    text-align: center;
-    align-self: center;
-    width: 100%;
-  }
-  
-  .scroll-top-button:hover {
-    opacity: 1;
-  }
-`
-
-document.head.appendChild(style)
-
-// Add CSS for the swipe view
-const additionalStyles = document.createElement('style')
-additionalStyles.textContent = `
-  .view-toggle-container {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    background: rgba(100, 108, 255, 0.1);
-    border-radius: 8px;
-    border: 1px solid rgba(100, 108, 255, 0.2);
-    width: fit-content;
-    margin: 0 auto 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .view-toggle-label {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin-right: 1rem;
-    font-size: 1.1rem;
-  }
-  
-  .view-toggle-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.6rem 1.5rem;
-    margin-right: 0.75rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 1rem;
-  }
-  
-  .view-toggle-button:last-child {
-    margin-right: 0;
-  }
-  
-  .view-toggle-button.active {
-    background: #646cff;
-    color: white;
-    border-color: #646cff;
-    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
-    transform: translateY(-2px);
-  }
-  
-  .swipe-container {
-    position: relative;
-    width: 90%;
-    max-width: 600px;
-    margin: 2rem auto;
-    height: 550px;
-    overflow: hidden;
-  }
-  
-  .carousel-track {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .swipe-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .swipe-card-content {
-    width: 90%;
-    height: 85%;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    margin: 20px 0;
-  }
-  
-  .swipe-number {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(100, 108, 255, 0.2);
-    color: #646cff;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-  
-  .swipe-title {
-    font-size: 1.6rem;
-    margin: 0 0 1.5rem 0;
-    color: rgba(255, 255, 255, 0.95);
-  }
-  
-  .swipe-description {
-    flex: 1;
-    overflow-y: auto;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 1.5rem;
-    padding-right: 0.5rem;
-  }
-  
-  .swipe-description::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .swipe-description::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-  }
-  
-  .swipe-description::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-  }
-  
-  .swipe-source {
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.95rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .swipe-arabic {
-    font-family: 'Traditional Arabic', 'Scheherazade New', serif;
-    font-size: 1.8rem;
-    line-height: 1.8;
-    text-align: right;
-    direction: rtl;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    display: none;
-  }
-  
-  .swipe-card.flipped .swipe-description {
-    display: none;
-  }
-  
-  .swipe-card.flipped .swipe-arabic {
-    display: block;
-  }
-  
-  .pagination-dot.active {
-    background: #646cff;
-    transform: scale(1.2);
-    box-shadow: 0 0 8px rgba(100, 108, 255, 0.5);
-  }
-  
-  @media (max-width: 768px) {
-    .swipe-container {
-      width: 90%;
-      height: 500px;
-      margin: 1.5rem auto 2.5rem;
-    }
-    
-    .swipe-card-content {
-      width: 90%;
-      height: 85%;
-      padding: 1.5rem;
-      margin: 15px 0;
-    }
-  }
-  
-  /* Light mode styles for view switcher and swipe cards */
-  @media (prefers-color-scheme: light) {
-    .view-toggle-container {
-      background: rgba(100, 108, 255, 0.1);
-      border: 1px solid rgba(100, 108, 255, 0.2);
-    }
-    
-    .view-toggle-label {
-      color: rgba(0, 0, 0, 0.8);
-    }
-    
-    .view-toggle-button {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: rgba(0, 0, 0, 0.8);
-    }
-    
-    .view-toggle-button.active {
-      background: #646cff;
-      color: white;
-      border-color: #646cff;
-    }
-    
-    .swipe-card-content {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .swipe-title {
-      color: rgba(0, 0, 0, 0.9);
-    }
-    
-    .swipe-description {
-      color: rgba(0, 0, 0, 0.8);
-    }
-    
-    .swipe-description::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
-    }
-    
-    .swipe-description::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
-    }
-    
-    .swipe-source {
-      color: rgba(0, 0, 0, 0.6);
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-    }
-  }
-`
-
-document.head.appendChild(additionalStyles)
 
 // Create modal container for hadith details
 const modalContainer = document.createElement('div')
@@ -855,179 +559,3 @@ function filterDuaaTimes(category: string) {
   })
 }
 
-// Add CSS styles for the modal popup
-const modalStyles = document.createElement('style')
-modalStyles.textContent = `
-  /* Modal Styles */
-  .modal-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
-  }
-  
-  .modal-content {
-    background-color: #242424;
-    border-radius: 16px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: modalFadeIn 0.3s ease;
-  }
-  
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .modal-title {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #f8f8f8;
-  }
-  
-  .modal-close-button {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.8rem;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    line-height: 1;
-    transition: color 0.3s ease;
-  }
-  
-  .modal-close-button:hover {
-    color: #fff;
-  }
-  
-  .modal-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  .modal-arabic-text {
-    font-family: 'Traditional Arabic', 'Scheherazade New', serif;
-    font-size: 1.8rem;
-    line-height: 1.8;
-    text-align: right;
-    direction: rtl;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-  }
-  
-  .modal-english-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .modal-reference {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .modal-reference a {
-    color: #646cff;
-    text-decoration: none;
-    transition: color 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .modal-reference a:hover {
-    color: #535bf2;
-    text-decoration: underline;
-  }
-  
-  .modal-reference a::before {
-    content: '🔗';
-  }
-  
-  @media (prefers-color-scheme: light) {
-    .modal-content {
-      background-color: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .modal-header {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .modal-title {
-      color: #213547;
-    }
-    
-    .modal-close-button {
-      color: rgba(0, 0, 0, 0.7);
-    }
-    
-    .modal-close-button:hover {
-      color: #000;
-    }
-    
-    .modal-arabic-text {
-      color: rgba(0, 0, 0, 0.9);
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    .modal-english-text {
-      color: rgba(0, 0, 0, 0.8);
-    }
-    
-    .modal-reference {
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .modal-content {
-      width: 95%;
-    }
-    
-    .modal-title {
-      font-size: 1.3rem;
-    }
-    
-    .modal-arabic-text {
-      font-size: 1.5rem;
-    }
-    
-    .modal-english-text {
-      font-size: 1rem;
-    }
-  }
-`
-
-document.head.appendChild(modalStyles)
