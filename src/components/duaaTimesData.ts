@@ -4,6 +4,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 1,
     title: 'Last Third of the Night',
+    category: 'Daily',
     source: 'Sahih al-Bukhari 1145',
     arabicText: 'يَنْزِلُ رَبُّنَا تَبَارَكَ وَتَعَالَى كُلَّ لَيْلَةٍ إِلَى السَّمَاءِ الدُّنْيَا حِينَ يَبْقَى ثُلُثُ اللَّيْلِ الآخِرُ يَقُولُ مَنْ يَدْعُونِي فَأَسْتَجِيبَ لَهُ مَنْ يَسْأَلُنِي فَأُعْطِيَهُ مَنْ يَسْتَغْفِرُنِي فَأَغْفِرَ لَهُ',
     englishText: 'Our Lord, the Blessed and the Exalted, descends every night to the lowest heaven when the last third of the night remains, saying: "Who is supplicating to Me that I may answer him? Who is asking of Me that I may give him? Who is seeking My forgiveness that I may forgive him?"',
@@ -12,6 +13,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 2,
     title: 'Between the adhān and iqāma',
+    category: 'Daily',
     source: 'Sunan Abu Dawud 521, Tirmidhi 212',
     arabicText: 'الدُّعَاءُ لاَ يُرَدُّ بَيْنَ الأَذَانِ وَالإِقَامَةِ',
     englishText: 'The supplication made between the Adhan and Iqama is not rejected.',
@@ -20,6 +22,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 3,
     title: 'During Sujood',
+    category: 'Daily',
     description: 'The closest a servant is to Allah',
     source: 'Sahih Muslim 482',
     arabicText: 'أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ',
@@ -29,6 +32,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 4,
     title: 'After the obligatory prayers',
+    category: 'Daily',
     source: 'Jami\' at-Tirmidhi 3499',
     arabicText: 'أَيُّ الدُّعَاءِ أَسْمَعُ؟ قَالَ: جَوْفُ اللَّيْلِ الآخِرِ، وَدُبُرَ الصَّلَوَاتِ الْمَكْتُوبَاتِ',
     englishText: 'It was asked: Which supplication is most likely to be heard? He said: In the last part of the night, and after the obligatory prayers.',
@@ -37,6 +41,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 5,
     title: 'Duaa of fasting person until they break their fast',
+    category: 'Special Occasions',
     source: 'Jami\' at-Tirmidhi 3598',
     arabicText: 'ثَلَاثَةٌ لَا تُرَدُّ دَعْوَتُهُمُ: الصَّائِمُ حَتَّى يُفْطِرَ، وَالْإِمَامُ الْعَادِلُ، وَدَعْوَةُ الْمَظْلُومِ',
     englishText: 'Three people whose supplication is not rejected: the fasting person until he breaks his fast, the just ruler, and the supplication of the oppressed person.',
@@ -45,6 +50,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 6,
     title: 'When drinking Zamzam water',
+    category: 'Special Occasions',
     source: 'Sunan Ibn Majah 3062',
     arabicText: 'مَاءُ زَمْزَمَ لِمَا شُرِبَ لَهُ',
     englishText: 'The water of Zamzam is for whatever purpose it is drunk for.',
@@ -53,6 +59,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 7,
     title: 'Last Hour of Asr on Friday',
+    category: 'Weekly',
     source: 'Sunan Abi Dawud 1048',
     arabicText: 'إِنَّ فِي الْجُمُعَةِ لَسَاعَةً لاَ يُوَافِقُهَا عَبْدٌ مُسْلِمٌ وَهُوَ قَائِمٌ يُصَلِّي يَسْأَلُ اللَّهَ شَيْئًا إِلاَّ أَعْطَاهُ إِيَّاهُ',
     englishText: 'There is a time on Friday at which no Muslim servant stands and prays, asking Allah for something, but He will give it to him.',
@@ -61,6 +68,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 8,
     title: 'Making duaa for someone in their absence',
+    category: 'Personal States',
     description: 'Angels make duaa for you as you do for others in their absence',
     source: 'Sahih Muslim 2732',
     arabicText: 'دَعْوَةُ الْمَرْءِ الْمُسْلِمِ لأَخِيهِ بِظَهْرِ الْغَيْبِ مُسْتَجَابَةٌ عِنْدَ رَأْسِهِ مَلَكٌ مُوَكَّلٌ كُلَّمَا دَعَا لأَخِيهِ بِخَيْرٍ قَالَ الْمَلَكُ الْمُوَكَّلُ بِهِ آمِينَ وَلَكَ بِمِثْلٍ',
@@ -70,6 +78,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 9,
     title: 'Duaa of righteous person for his parents',
+    category: 'Personal States',
     source: 'Sahih Muslim 1631',
     arabicText: 'إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ: إِلاَّ مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ',
     englishText: 'When a person dies, his deeds come to an end except for three: a continuous charity, beneficial knowledge, or a righteous child who supplicates for him.',
@@ -78,6 +87,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 10,
     title: 'Duaa of a parent',
+    category: 'Personal States',
     source: 'Sunan al-Kubra lil-Bayhaqi 6392',
     arabicText: 'ثَلاَثُ دَعَوَاتٍ مُسْتَجَابَاتٌ لاَ شَكَّ فِيهِنَّ: دَعْوَةُ الْمَظْلُومِ، وَدَعْوَةُ الْمُسَافِرِ، وَدَعْوَةُ الْوَالِدِ عَلَى وَلَدِهِ',
     englishText: 'Three supplications are answered without doubt: the supplication of the oppressed, the supplication of the traveler, and the supplication of a parent for or against his child.',
@@ -85,6 +95,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 11,
     title: 'Whenever you visit the sick, the angels say ameen to whatever good you say',
+    category: 'Personal States',
     source: 'Sahih Muslim 919',
     arabicText: 'إِذَا دَخَلْتُمْ عَلَى الْمَرِيضِ فَقُولُوا خَيْرًا، فَإِنَّ الْمَلَائِكَةَ يُؤَمِّنُونَ عَلَى مَا تَقُولُونَ',
     englishText: 'When you enter upon a sick person, say good words, for indeed the angels say ameen to whatever you say.',
@@ -93,6 +104,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 12,
     title: 'When rain falls',
+    category: 'Special Occasions',
     source: 'Sunan Abi Dawud 2540',
     arabicText: 'اطْلُبُوا إِجَابَةَ الدُّعَاءِ عِنْدَ الْتِقَاءِ الْجُيُوشِ، وَإِقَامَةِ الصَّلاَةِ، وَنُزُولِ الْغَيْثِ',
     englishText: 'Seek the response to your supplications at three times: when armies meet, when the prayer is established, and when rain falls.',
@@ -101,6 +113,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 13,
     title: 'Duaa of traveler',
+    category: 'Personal States',
     source: 'Jami\' at-Tirmidhi 1905',
     arabicText: 'ثَلاَثُ دَعَوَاتٍ لاَ تُرَدُّ: دَعْوَةُ الْوَالِدِ لِوَلَدِهِ، وَدَعْوَةُ الصَّائِمِ، وَدَعْوَةُ الْمُسَافِرِ',
     englishText: 'Three supplications are not rejected: the supplication of a father for his child, the supplication of the fasting person, and the supplication of the traveler.',
@@ -109,6 +122,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 14,
     title: 'Duaa of Yunus AS',
+    category: 'Personal States',
     description: 'Lā ilāha illā anta subḥānaka innī kuntu minaẓ-ẓālimīn',
     source: 'Sunan al-Tirmidhi 3505',
     arabicText: 'لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ',
@@ -118,6 +132,7 @@ export const duaaTimesData: DuaaTimeProps[] = [
   {
     number: 15,
     title: 'The oppressed / one who has been wronged',
+    category: 'Personal States',
     description: 'No barrier between duaa and Allah',
     source: 'Sahih al-Bukhari 2448, Muslim 19',
     arabicText: 'وَاتَّقِ دَعْوَةَ الْمَظْلُومِ فَإِنَّهُ لَيْسَ بَيْنَهَا وَبَيْنَ اللَّهِ حِجَابٌ',
