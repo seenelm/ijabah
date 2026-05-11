@@ -429,12 +429,26 @@ button {
 /* ─── Swipe / carousel view ─── */
 .swipe-container {
   position: relative;
-  width: 90%;
-  max-width: 580px;
-  height: 520px;
+  width: 100%;
+  max-width: 560px;
   margin: 0.5rem auto 3rem;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
 }
+
+/* Viewport clips the card track */
+.swipe-viewport {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  cursor: grab;
+  user-select: none;
+}
+.swipe-container.is-dragging .swipe-viewport { cursor: grabbing; }
 
 .carousel-track {
   position: relative;
@@ -451,185 +465,228 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  transition: transform 0.55s var(--ease-out), opacity 0.55s var(--ease-out);
+  transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
+  user-select: none;
 }
 
 .swipe-card-content {
   width: 92%;
-  height: 88%;
+  height: 92%;
   background: var(--clr-card);
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-lg);
-  padding: 2rem 1.75rem 1.5rem;
+  padding: 1.25rem 1.5rem 1rem;
   display: flex;
   flex-direction: column;
+  gap: 0.6rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  transition: box-shadow 0.3s;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
 }
 
-/* top gradient stripe on swipe card */
+/* Top gradient accent line */
 .swipe-card-content::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--clr-primary), var(--clr-gold));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* ─── Card header: category + number ─── */
+.swipe-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding-top: 0.2rem;
+}
+
+.swipe-category {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--clr-primary);
+  background: var(--clr-primary-dim);
+  padding: 0.22rem 0.7rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(16,185,129,0.22);
 }
 
 .swipe-number {
-  position: absolute;
-  top: 1.1rem;
-  right: 1.25rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
   background: var(--clr-gold-dim);
   color: var(--clr-gold);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-pill);
-  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
+/* ─── Card title ─── */
 .swipe-title {
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--clr-text);
   text-align: center;
-  margin: 0.25rem 0 1.25rem;
-  padding-right: 3rem; /* avoid number badge overlap */
+  line-height: 1.3;
+  flex-shrink: 0;
 }
 
-.swipe-description {
+/* ─── Scrollable body ─── */
+.swipe-body {
   flex: 1;
   overflow-y: auto;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--clr-text-muted);
-  padding-right: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-right: 0.2rem;
+  min-height: 0;
   scrollbar-width: thin;
   scrollbar-color: var(--clr-border) transparent;
 }
-.swipe-description::-webkit-scrollbar { width: 5px; }
-.swipe-description::-webkit-scrollbar-track { background: transparent; }
-.swipe-description::-webkit-scrollbar-thumb {
+.swipe-body::-webkit-scrollbar { width: 4px; }
+.swipe-body::-webkit-scrollbar-track { background: transparent; }
+.swipe-body::-webkit-scrollbar-thumb {
   background: var(--clr-border);
   border-radius: 10px;
 }
 
+.swipe-description {
+  font-size: 0.93rem;
+  line-height: 1.72;
+  color: var(--clr-text-muted);
+  margin: 0;
+}
+
+/* ─── Arabic block (always visible) ─── */
+.swipe-arabic-block {
+  background: var(--clr-primary-dim);
+  border: 1px solid rgba(16,185,129,0.18);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.swipe-arabic-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--clr-primary);
+  opacity: 0.8;
+}
+
 .swipe-arabic {
   font-family: var(--font-arabic);
-  font-size: 1.7rem;
-  line-height: 2;
+  font-size: 1.5rem;
+  line-height: 1.95;
   text-align: right;
   direction: rtl;
   color: var(--clr-text);
-  padding: 1rem;
-  background: var(--clr-primary-dim);
-  border-radius: var(--radius-sm);
-  display: none;
-  flex: 1;
 }
 
-.swipe-source {
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--clr-text-faint);
-  padding-top: 1rem;
-  margin-top: auto;
-  border-top: 1px solid var(--clr-border);
-  text-align: center;
-  transition: color 0.2s;
-}
-
-/* hint text: tap to flip */
-.swipe-card-content::after {
-  content: 'Tap to see Arabic ↓';
-  position: absolute;
-  bottom: 3.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.7rem;
-  color: var(--clr-text-faint);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.swipe-card:not(.flipped) .swipe-card-content::after { opacity: 1; }
-
-/* Flip: toggle description ↔ arabic */
-.swipe-card.flipped .swipe-description { display: none; }
-.swipe-card.flipped .swipe-arabic      { display: block; }
-
-/* No Arabic available state */
 .swipe-arabic[data-empty] {
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-style: italic;
   color: var(--clr-text-faint);
   text-align: center;
   direction: ltr;
+  line-height: 1.5;
 }
 
-/* ─── Carousel nav buttons ─── */
-.carousel-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 42px;
-  height: 42px;
+/* ─── Source footer ─── */
+.swipe-source {
+  font-size: 0.77rem;
+  font-style: italic;
+  color: var(--clr-text-faint);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--clr-border);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ─── Swipe gesture hint ─── */
+.swipe-hint {
+  font-size: 0.73rem;
+  color: var(--clr-text-faint);
+  text-align: center;
+  letter-spacing: 0.02em;
+  margin-top: -0.1rem;
+}
+
+/* ─── Bottom navigation row ─── */
+.swipe-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.swipe-nav-btn {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
   color: var(--clr-primary);
-  font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s var(--ease-out);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  flex-shrink: 0;
   padding: 0;
-  line-height: 1;
+  transition: all 0.2s var(--ease-out);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
-.carousel-button:hover {
+.swipe-nav-btn:hover {
   background: var(--clr-primary);
   border-color: var(--clr-primary);
   color: #fff;
   box-shadow: 0 4px 18px var(--clr-primary-glow);
-  transform: translateY(-50%) scale(1.08);
+  transform: scale(1.08);
 }
-.prev-button { left: 8px; }
-.next-button { right: 8px; }
+.swipe-nav-btn:active { transform: scale(0.94); }
 
-/* ─── Pagination dots ─── */
-.pagination-container {
-  position: absolute;
-  bottom: 14px;
-  left: 0;
-  right: 0;
+.swipe-counter-area {
   display: flex;
-  justify-content: center;
-  gap: 7px;
-  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 110px;
 }
 
-.pagination-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--clr-border);
-  cursor: pointer;
-  transition: all 0.25s;
+.swipe-counter {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--clr-text-muted);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
 }
-.pagination-dot.active {
-  background: var(--clr-primary);
-  width: 22px;
-  border-radius: 4px;
-  box-shadow: 0 0 8px var(--clr-primary-glow);
+
+.swipe-progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--clr-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.swipe-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--clr-primary), var(--clr-gold));
+  border-radius: 2px;
+  transition: width 0.4s var(--ease-out);
 }
 
 /* ─── Scroll-to-top ─── */
@@ -825,37 +882,23 @@ button {
   .duaa-time-title { font-size: 0.98rem; }
 
   /* Swipe view */
-  .swipe-container {
-    width: 96%;
-    height: auto;
-    min-height: 440px;
-    margin: 0 auto 3.5rem;
-    padding-bottom: 2.5rem;
-  }
+  .swipe-container { margin-bottom: 2.5rem; }
+
+  .swipe-viewport { height: 480px; }
 
   .swipe-card-content {
-    width: 94%;
-    height: auto;
-    min-height: 360px;
-    padding: 1.5rem 1.25rem 1.25rem;
+    width: 96%;
+    height: 96%;
+    padding: 1.1rem 1.2rem 0.9rem;
   }
 
-  .swipe-title {
-    font-size: 1.15rem;
-    margin-bottom: 1rem;
-    padding-right: 2.5rem;
-  }
+  .swipe-title { font-size: 1.05rem; }
+  .swipe-description { font-size: 0.88rem; }
+  .swipe-arabic { font-size: 1.3rem; }
 
-  .swipe-description { font-size: 0.9rem; }
-  .swipe-arabic      { font-size: 1.4rem; }
-
-  .carousel-button {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
-  }
-  .prev-button { left: 2px; }
-  .next-button { right: 2px; }
+  .swipe-nav-btn { width: 42px; height: 42px; }
+  .swipe-counter-area { min-width: 90px; }
+  .swipe-counter { font-size: 0.88rem; }
 
   .scroll-top-button {
     bottom: 1.25rem;

@@ -108,28 +108,56 @@ const swipeContainer = document.createElement('div')
 swipeContainer.className = 'swipe-container'
 swipeContainer.style.display = 'none' // Initially hidden
 
+// Viewport clips the card track
+const swipeViewport = document.createElement('div')
+swipeViewport.className = 'swipe-viewport'
+
 // Create carousel track
 const carouselTrack = document.createElement('div')
 carouselTrack.className = 'carousel-track'
-swipeContainer.appendChild(carouselTrack)
+swipeViewport.appendChild(carouselTrack)
+swipeContainer.appendChild(swipeViewport)
 
-// Create navigation buttons
+// Swipe gesture hint
+const swipeHint = document.createElement('div')
+swipeHint.className = 'swipe-hint'
+swipeHint.textContent = 'Drag or use arrow keys to navigate'
+swipeContainer.appendChild(swipeHint)
+
+// Bottom navigation row
+const swipeNav = document.createElement('div')
+swipeNav.className = 'swipe-nav'
+
 const prevButton = document.createElement('button')
-prevButton.className = 'carousel-button prev-button'
-prevButton.innerHTML = '&#8592;' // Left arrow
+prevButton.className = 'swipe-nav-btn'
+prevButton.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`
 prevButton.setAttribute('aria-label', 'Previous card')
-swipeContainer.appendChild(prevButton)
+
+const swipeCounterArea = document.createElement('div')
+swipeCounterArea.className = 'swipe-counter-area'
+
+const swipeCounter = document.createElement('span')
+swipeCounter.className = 'swipe-counter'
+swipeCounter.textContent = '1 / 1'
+
+const swipeProgressTrack = document.createElement('div')
+swipeProgressTrack.className = 'swipe-progress-track'
+const swipeProgressFill = document.createElement('div')
+swipeProgressFill.className = 'swipe-progress-fill'
+swipeProgressTrack.appendChild(swipeProgressFill)
+
+swipeCounterArea.appendChild(swipeCounter)
+swipeCounterArea.appendChild(swipeProgressTrack)
 
 const nextButton = document.createElement('button')
-nextButton.className = 'carousel-button next-button'
-nextButton.innerHTML = '&#8594;' // Right arrow
+nextButton.className = 'swipe-nav-btn'
+nextButton.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`
 nextButton.setAttribute('aria-label', 'Next card')
-swipeContainer.appendChild(nextButton)
 
-// Create pagination container
-const paginationContainer = document.createElement('div')
-paginationContainer.className = 'pagination-container'
-swipeContainer.appendChild(paginationContainer)
+swipeNav.appendChild(prevButton)
+swipeNav.appendChild(swipeCounterArea)
+swipeNav.appendChild(nextButton)
+swipeContainer.appendChild(swipeNav)
 
 // Add both containers to the app
 appElement.appendChild(duaaTimesContainer)
@@ -139,21 +167,14 @@ appElement.appendChild(swipeContainer)
 let currentIndex = 0
 let totalCards = 0
 
-// Add duaa times to the grid view and create pagination dots
+// Add duaa times to the grid view
 duaaTimesData.forEach((duaaTime, index) => {
   // Create element for grid view with animation delay
   setTimeout(() => {
     const duaaTimeElement = createDuaaTimeElement(duaaTime)
     duaaTimesContainer.appendChild(duaaTimeElement)
   }, index * 50) // 50ms delay between each card
-  
-  // Create pagination indicator
-  const paginationDot = document.createElement('span')
-  paginationDot.className = 'pagination-dot'
-  if (index === 0) paginationDot.classList.add('active')
-  paginationDot.setAttribute('data-index', index.toString())
-  paginationContainer.appendChild(paginationDot)
-  
+
   totalCards++
 })
 
@@ -176,7 +197,7 @@ document.querySelectorAll('.view-toggle-button').forEach(button => {
       swipeContainer.style.display = 'none'
     } else if (viewType === 'swipe') {
       duaaTimesContainer.style.display = 'none'
-      swipeContainer.style.display = 'block'
+      swipeContainer.style.display = 'flex'
       
       // If switching to swipe view, populate it with cards
       if (carouselTrack.children.length === 0) {
@@ -191,160 +212,235 @@ document.querySelectorAll('.view-toggle-button').forEach(button => {
 
 // Function to populate the swipe view with cards
 function populateSwipeView() {
-  // Clear existing cards
   carouselTrack.innerHTML = ''
-  
-  // Add duaa times to the swipe view
+
   duaaTimesData.forEach((duaaTime, index) => {
     const swipeCard = document.createElement('div')
     swipeCard.className = 'swipe-card'
     swipeCard.setAttribute('data-index', index.toString())
-    
-    // Create a container specifically for the swipe view
+
     const swipeCardContent = document.createElement('div')
     swipeCardContent.className = 'swipe-card-content'
-    
-    // Create number badge
-    const number = document.createElement('div')
-    number.className = 'swipe-number'
-    number.textContent = `#${index + 1}`
-    
-    // Create title
+
+    // Header: category badge + number badge
+    const cardHeader = document.createElement('div')
+    cardHeader.className = 'swipe-card-header'
+
+    if (duaaTime.category) {
+      const categoryBadge = document.createElement('span')
+      categoryBadge.className = 'swipe-category'
+      categoryBadge.textContent = duaaTime.category
+      cardHeader.appendChild(categoryBadge)
+    } else {
+      cardHeader.appendChild(document.createElement('span'))
+    }
+
+    const numberBadge = document.createElement('span')
+    numberBadge.className = 'swipe-number'
+    numberBadge.textContent = `${index + 1}`
+    cardHeader.appendChild(numberBadge)
+
+    // Title
     const title = document.createElement('h3')
     title.className = 'swipe-title'
     title.textContent = duaaTime.title
-    
-    // Create description
-    const description = document.createElement('div')
-    description.className = 'swipe-description'
-    description.textContent = duaaTime.description || '' // Use empty string as fallback
-    
-    // Create English text if available (use as description if no description exists)
-    if (duaaTime.englishText && !duaaTime.description) {
-      description.textContent = duaaTime.englishText
+
+    // Scrollable body
+    const body = document.createElement('div')
+    body.className = 'swipe-body'
+
+    // English text
+    const englishText = duaaTime.englishText || duaaTime.description || ''
+    if (englishText) {
+      const desc = document.createElement('p')
+      desc.className = 'swipe-description'
+      desc.textContent = englishText
+      body.appendChild(desc)
     }
-    
-    // Create Arabic text element
-    const arabic = document.createElement('div')
-    arabic.className = 'swipe-arabic'
-    
+
+    // Arabic block (always visible — no flip needed)
+    const arabicBlock = document.createElement('div')
+    arabicBlock.className = 'swipe-arabic-block'
+
+    const arabicLabel = document.createElement('span')
+    arabicLabel.className = 'swipe-arabic-label'
+    arabicLabel.textContent = 'Arabic'
+
+    const arabicDiv = document.createElement('div')
+    arabicDiv.className = 'swipe-arabic'
     if (duaaTime.arabicText) {
-      arabic.textContent = duaaTime.arabicText
+      arabicDiv.textContent = duaaTime.arabicText
     } else {
-      arabic.textContent = 'Arabic text not available for this entry.'
-      arabic.setAttribute('data-empty', '')
+      arabicDiv.textContent = 'Arabic text not available.'
+      arabicDiv.setAttribute('data-empty', '')
     }
-    
-    // Create source
+
+    arabicBlock.appendChild(arabicLabel)
+    arabicBlock.appendChild(arabicDiv)
+    body.appendChild(arabicBlock)
+
+    // Source footer
     const source = document.createElement('div')
     source.className = 'swipe-source'
     source.textContent = duaaTime.source
-    
-    // Assemble the card
-    swipeCardContent.appendChild(number)
+
+    // Assemble card
+    swipeCardContent.appendChild(cardHeader)
     swipeCardContent.appendChild(title)
-    swipeCardContent.appendChild(description)
-    swipeCardContent.appendChild(arabic)
+    swipeCardContent.appendChild(body)
     swipeCardContent.appendChild(source)
     swipeCard.appendChild(swipeCardContent)
-    
-    // Add flip functionality to the entire card
-    swipeCard.addEventListener('click', function() {
-      if (hasSwiped) return
-      this.classList.toggle('flipped')
-    })
-    
-    // Set initial position
+
+    // Initial position
     if (index === currentIndex) {
       swipeCard.style.transform = 'translateX(0) scale(1)'
       swipeCard.style.opacity = '1'
       swipeCard.style.zIndex = '5'
     } else {
       const direction = index < currentIndex ? -1 : 1
-      swipeCard.style.transform = `translateX(${direction * 100}%) scale(0.8)`
+      swipeCard.style.transform = `translateX(${direction * 105}%) scale(0.92)`
       swipeCard.style.opacity = '0'
       swipeCard.style.zIndex = '0'
     }
-    
+
     carouselTrack.appendChild(swipeCard)
   })
 }
 
+function updateCounter() {
+  swipeCounter.textContent = `${currentIndex + 1} / ${totalCards}`
+  swipeProgressFill.style.width = `${((currentIndex + 1) / totalCards) * 100}%`
+}
+
 // Function to update the carousel display
 function updateCarousel() {
-  // Update the carousel track position
   const swipeCards = document.querySelectorAll('.swipe-card')
   swipeCards.forEach((card, index) => {
     const htmlCard = card as HTMLElement
     if (index === currentIndex) {
-      htmlCard.style.transform = 'translateX(0) scale(1)'
+      htmlCard.style.transform = 'translateX(0) rotate(0deg) scale(1)'
       htmlCard.style.opacity = '1'
       htmlCard.style.zIndex = '5'
     } else {
       const direction = index < currentIndex ? -1 : 1
-      htmlCard.style.transform = `translateX(${direction * 100}%) scale(0.8)`
+      htmlCard.style.transform = `translateX(${direction * 105}%) scale(0.92)`
       htmlCard.style.opacity = '0'
       htmlCard.style.zIndex = '0'
     }
   })
-  
-  // Update pagination dots
-  document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
-    if (index === currentIndex) {
-      dot.classList.add('active')
-    } else {
-      dot.classList.remove('active')
-    }
-  })
+  updateCounter()
 }
 
-// Add event listeners for navigation buttons
+// Navigation button listeners
 prevButton.addEventListener('click', () => {
+  if (isDragging) return
   currentIndex = (currentIndex - 1 + totalCards) % totalCards
   updateCarousel()
 })
 
 nextButton.addEventListener('click', () => {
+  if (isDragging) return
   currentIndex = (currentIndex + 1) % totalCards
   updateCarousel()
 })
 
-// Add event listeners for pagination dots
-document.querySelectorAll('.pagination-dot').forEach((dot, index) => {
-  dot.addEventListener('click', () => {
-    currentIndex = index
-    updateCarousel()
-  })
-})
+// ─── Drag / swipe system ───
+let isDragging = false
+let dragStartX = 0
+let dragDelta = 0
+let activeCardEl: HTMLElement | null = null
+const DRAG_THRESHOLD = 72
 
-// Add touch swipe functionality for mobile users
+function getActiveCard(): HTMLElement | null {
+  return carouselTrack.querySelector(`.swipe-card[data-index="${currentIndex}"]`) as HTMLElement | null
+}
+
+function onDragStart(x: number) {
+  const card = getActiveCard()
+  if (!card) return
+  isDragging = true
+  dragStartX = x
+  dragDelta = 0
+  activeCardEl = card
+  card.style.transition = 'none'
+  swipeContainer.classList.add('is-dragging')
+}
+
+function onDragMove(x: number) {
+  if (!isDragging || !activeCardEl) return
+  dragDelta = x - dragStartX
+  const rotation = dragDelta * 0.022
+  const opacity = Math.max(0.6, 1 - Math.abs(dragDelta) / 480)
+  activeCardEl.style.transform = `translateX(${dragDelta}px) rotate(${rotation}deg) scale(1)`
+  activeCardEl.style.opacity = String(opacity)
+}
+
+function onDragEnd() {
+  if (!isDragging) return
+  isDragging = false
+  swipeContainer.classList.remove('is-dragging')
+  if (activeCardEl) activeCardEl.style.transition = ''
+  activeCardEl = null
+
+  if (Math.abs(dragDelta) > DRAG_THRESHOLD) {
+    currentIndex = dragDelta < 0
+      ? (currentIndex + 1) % totalCards
+      : (currentIndex - 1 + totalCards) % totalCards
+  }
+  updateCarousel()
+}
+
+// Mouse drag (desktop)
+swipeViewport.addEventListener('mousedown', (e) => {
+  e.preventDefault()
+  onDragStart(e.clientX)
+})
+document.addEventListener('mousemove', (e) => { if (isDragging) onDragMove(e.clientX) })
+document.addEventListener('mouseup', onDragEnd)
+
+// Touch swipe (mobile) — horizontal/vertical detection to preserve card body scrolling
 let touchStartX = 0
-let touchEndX = 0
-let hasSwiped = false
+let touchStartY = 0
+let touchLocked: 'h' | 'v' | null = null
 
-swipeContainer.addEventListener('touchstart', (e) => {
+swipeViewport.addEventListener('touchstart', (e) => {
   touchStartX = e.changedTouches[0].clientX
-  hasSwiped = false
+  touchStartY = e.changedTouches[0].clientY
+  touchLocked = null
+}, { passive: true })
+
+swipeViewport.addEventListener('touchmove', (e) => {
+  const touch = e.changedTouches[0]
+  const dx = touch.clientX - touchStartX
+  const dy = touch.clientY - touchStartY
+
+  if (!touchLocked && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+    touchLocked = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v'
+    if (touchLocked === 'h') onDragStart(touchStartX)
+  }
+
+  if (touchLocked === 'h' && isDragging) {
+    e.preventDefault()
+    onDragMove(touch.clientX)
+  }
+}, { passive: false })
+
+swipeViewport.addEventListener('touchend', () => {
+  if (touchLocked === 'h') onDragEnd()
+  touchLocked = null
 })
 
-swipeContainer.addEventListener('touchend', (e) => {
-  touchEndX = e.changedTouches[0].clientX
-  handleSwipe()
-})
-
-function handleSwipe() {
-  const swipeThreshold = 50
-  const dx = touchEndX - touchStartX
-  if (Math.abs(dx) > swipeThreshold) {
-    hasSwiped = true
-    if (dx < 0) {
-      currentIndex = (currentIndex + 1) % totalCards
-    } else {
-      currentIndex = (currentIndex - 1 + totalCards) % totalCards
-    }
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (swipeContainer.style.display === 'none') return
+  if (e.key === 'ArrowRight') {
+    currentIndex = (currentIndex + 1) % totalCards
+    updateCarousel()
+  } else if (e.key === 'ArrowLeft') {
+    currentIndex = (currentIndex - 1 + totalCards) % totalCards
     updateCarousel()
   }
-}
+})
 
 // Search functionality
 searchInput.addEventListener('input', (e) => {
