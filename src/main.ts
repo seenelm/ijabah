@@ -46,7 +46,11 @@ swipeViewButton.className = 'view-toggle-button'
 swipeViewButton.textContent = 'Swipe'
 swipeViewButton.setAttribute('data-view', 'swipe')
 
+const viewToggleIndicator = document.createElement('span')
+viewToggleIndicator.className = 'view-toggle-indicator'
+
 viewToggleContainer.appendChild(viewToggleLabel)
+viewToggleContainer.appendChild(viewToggleIndicator)
 viewToggleContainer.appendChild(gridViewButton)
 viewToggleContainer.appendChild(swipeViewButton)
 
@@ -98,6 +102,19 @@ categories.forEach((category, index) => {
 
 controlsContainer.appendChild(categoryFilters)
 appElement.appendChild(controlsContainer)
+
+function moveToggleIndicator(button: HTMLElement) {
+  viewToggleIndicator.style.transform = `translateX(${button.offsetLeft}px)`
+  viewToggleIndicator.style.width = `${button.offsetWidth}px`
+}
+
+// Set initial position without transition, force composite flush, then re-enable
+viewToggleIndicator.style.transition = 'none'
+moveToggleIndicator(gridViewButton)
+// getComputedStyle forces a full style resolution (layout + composite) so the
+// browser commits the transform/width before the transition is re-enabled
+getComputedStyle(viewToggleIndicator).transform
+viewToggleIndicator.style.transition = ''
 
 // Create the container for all du'aa times
 const duaaTimesContainer = document.createElement('div')
@@ -187,9 +204,10 @@ document.querySelectorAll('.view-toggle-button').forEach(button => {
     document.querySelectorAll('.view-toggle-button').forEach(btn => {
       btn.classList.remove('active')
     })
-    
+
     // Add active class to clicked button
     button.classList.add('active')
+    moveToggleIndicator(button as HTMLElement)
     
     // Toggle visibility of containers
     if (viewType === 'grid') {
