@@ -240,6 +240,9 @@ button {
   font-size: 0.9rem;
   font-weight: 500;
   transition: color 0.25s var(--ease-out);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .view-toggle-button:hover { color: var(--clr-text); }
 .view-toggle-button.active {
