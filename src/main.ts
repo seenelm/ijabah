@@ -104,7 +104,7 @@ controlsContainer.appendChild(categoryFilters)
 appElement.appendChild(controlsContainer)
 
 function moveToggleIndicator(button: HTMLElement) {
-  viewToggleIndicator.style.left = `${button.offsetLeft}px`
+  viewToggleIndicator.style.transform = `translateX(${button.offsetLeft}px)`
   viewToggleIndicator.style.width = `${button.offsetWidth}px`
 }
 
