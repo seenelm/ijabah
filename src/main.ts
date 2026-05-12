@@ -108,10 +108,11 @@ function moveToggleIndicator(button: HTMLElement) {
   viewToggleIndicator.style.width = `${button.offsetWidth}px`
 }
 
-// Set initial position without transition
+// Set initial position without transition, force reflow, then re-enable
 viewToggleIndicator.style.transition = 'none'
 moveToggleIndicator(gridViewButton)
-requestAnimationFrame(() => { viewToggleIndicator.style.transition = '' })
+void viewToggleIndicator.offsetWidth  // force reflow so browser commits the no-transition state
+viewToggleIndicator.style.transition = ''
 
 // Create the container for all du'aa times
 const duaaTimesContainer = document.createElement('div')
