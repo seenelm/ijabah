@@ -108,10 +108,12 @@ function moveToggleIndicator(button: HTMLElement) {
   viewToggleIndicator.style.width = `${button.offsetWidth}px`
 }
 
-// Set initial position without transition, force reflow, then re-enable
+// Set initial position without transition, force composite flush, then re-enable
 viewToggleIndicator.style.transition = 'none'
 moveToggleIndicator(gridViewButton)
-void viewToggleIndicator.offsetWidth  // force reflow so browser commits the no-transition state
+// getComputedStyle forces a full style resolution (layout + composite) so the
+// browser commits the transform/width before the transition is re-enabled
+getComputedStyle(viewToggleIndicator).transform
 viewToggleIndicator.style.transition = ''
 
 // Create the container for all du'aa times
